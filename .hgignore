@@ -1,0 +1,9 @@
+syntax: glob
+[Bb]in/
+obj/
+_ReSharper.*/
+*.suo
+*.user
+packages/
+Images/
+Conservatorium/AppPackages/
