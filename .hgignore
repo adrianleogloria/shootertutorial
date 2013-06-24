@@ -7,3 +7,5 @@ _ReSharper.*/
 packages/
 Images/
 Conservatorium/AppPackages/
+CustomModelClassSample_4_0/
+*.cachefile

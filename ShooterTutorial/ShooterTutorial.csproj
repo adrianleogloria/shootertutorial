@@ -144,6 +144,18 @@
     <Content Include="Content\Graphics\player.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Models\engine_diff_tex_0.xnb">
+      <Link>Content\Models\engine_diff_tex_0.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Models\tank.xnb">
+      <Link>Content\Models\tank.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Models\turret_alt_diff_tex_0.xnb">
+      <Link>Content\Models\turret_alt_diff_tex_0.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="ShooterTutorial_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
