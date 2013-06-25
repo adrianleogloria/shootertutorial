@@ -178,6 +178,12 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ShooterContentTypes\ShooterContentTypes.csproj">
+      <Project>{c5b2c61d-d4b5-4b74-832f-c45c42b4685e}</Project>
+      <Name>ShooterContentTypes</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
   </PropertyGroup>

@@ -51,7 +51,7 @@
     <Compile Include="Models\tank.fbx">
       <Name>tank</Name>
       <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
+      <Processor>CustomModelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -139,6 +139,12 @@
       <Importer>Mp3Importer</Importer>
       <Processor>SongProcessor</Processor>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ShooterContentTypesPipeline\ShooterContentTypesPipeline.csproj">
+      <Project>{c5f3c1dd-97fc-4b3c-938b-92a5ad4910ca}</Project>
+      <Name>ShooterContentTypesPipeline</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--

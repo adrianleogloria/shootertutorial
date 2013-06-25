@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using ShooterTutorial.ShooterContentTypes;
 
 namespace ShooterTutorial
 {
@@ -104,13 +105,14 @@ namespace ShooterTutorial
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        Model model;
+        CustomModel model;
 
         Matrix world;
         Matrix view;
         Matrix projection;
 
         public Game1()
+            : base()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -139,9 +141,7 @@ namespace ShooterTutorial
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            model = Content.Load<Model>("Models\\tank");
-
-            world = Matrix.Identity;
+            model = Content.Load<CustomModel>("Models\\tank");
 
             // Calculate camera view and projection matrices.
             view = Matrix.CreateLookAt(new Vector3(1000, 500, 0),
@@ -149,17 +149,7 @@ namespace ShooterTutorial
 
             projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4,
                                                              GraphicsDevice.Viewport.AspectRatio, 10, 10000);
-            foreach (ModelMesh mesh in model.Meshes)
-            {
-                foreach (BasicEffect effect in mesh.Effects)
-                {
-                    effect.EnableDefaultLighting();
 
-                    effect.World = world;
-                    effect.View = view;
-                    effect.Projection = projection;
-                }
-            }
         }
 
         /// <summary>
@@ -182,6 +172,12 @@ namespace ShooterTutorial
                 Exit();
 
             // TODO: Add your update logic here
+            HandleInput();
+
+            // Update the world transform to make the model rotate.
+            float time = (float)gameTime.TotalGameTime.TotalSeconds;
+
+            world = Matrix.CreateRotationY(time * 0.1f);
 
             base.Update(gameTime);
         }
@@ -195,10 +191,32 @@ namespace ShooterTutorial
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
+
             model.Draw(world, view, projection);
 
             base.Draw(gameTime);
         }
+
+        #region Handle Input
+
+        /// <summary>
+        /// Handles input for quitting the game.
+        /// </summary>
+        private void HandleInput()
+        {
+            KeyboardState currentKeyboardState = Keyboard.GetState();
+            GamePadState currentGamePadState = GamePad.GetState(PlayerIndex.One);
+
+            // Check for exit.
+            if (currentKeyboardState.IsKeyDown(Keys.Escape) ||
+                currentGamePadState.Buttons.Back == ButtonState.Pressed)
+            {
+                Exit();
+            }
+        }
+
+        #endregion
     }
 
 }
