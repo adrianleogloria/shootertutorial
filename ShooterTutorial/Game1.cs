@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input.Touch;
 using ShooterTutorial.ShooterContentTypes;
 
 namespace ShooterTutorial
@@ -12,7 +13,23 @@ namespace ShooterTutorial
     {
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
-        private Player _player;
+        Player _player;
+
+        // Keyboard states
+        KeyboardState _currentKeyboardState;
+        KeyboardState _prevKeyboardState;
+
+        // Gamepad states
+        GamePadState _currentGamePadState;
+        GamePadState _prevGamePadState;
+
+        // Mouse states
+        MouseState _currentMouseState;
+        MouseState _prevMouseState;
+
+        // A movement speed for the player.
+        private const float PlayerMoveSpeed = 8;
+
 
         public Game1()
         {
@@ -30,6 +47,11 @@ namespace ShooterTutorial
         {
             // TODO: Add your initialization logic here
             _player = new Player();
+            
+            // Set a constant player move speed.
+            //_playerMoveSpeed = 8;
+
+            TouchPanel.EnabledGestures = GestureType.FreeDrag;
             
             base.Initialize();
         }
@@ -69,9 +91,49 @@ namespace ShooterTutorial
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // TODO: Add your update logic here
+            // User inputs.
+            // Save the previous state of the keyboard and game pad so we can determine single key/button presses
+            _prevGamePadState = _currentGamePadState;
+            _prevKeyboardState = _currentKeyboardState;
+            // Read the current state of the keyboard and gamepad and store it.
+            _currentKeyboardState = Keyboard.GetState();
+            _currentGamePadState = GamePad.GetState(PlayerIndex.One);
+            
+            UpdatePlayer(gameTime);
 
             base.Update(gameTime);
+        }
+
+        void UpdatePlayer(GameTime gameTime)
+        {
+            // Thumbstick controls
+            _player.Position.X += _currentGamePadState.ThumbSticks.Left.X * PlayerMoveSpeed;
+            _player.Position.Y += _currentGamePadState.ThumbSticks.Left.Y * PlayerMoveSpeed;
+
+            // Keyboard/DPad
+            if (_currentKeyboardState.IsKeyDown(Keys.Left) || _currentGamePadState.DPad.Left == ButtonState.Pressed)
+            {
+                _player.Position.X -= +PlayerMoveSpeed;
+            }
+            if (_currentKeyboardState.IsKeyDown(Keys.Right) || _currentGamePadState.DPad.Right == ButtonState.Pressed)
+            {
+                _player.Position.X += PlayerMoveSpeed;
+            }
+
+            if (_currentKeyboardState.IsKeyDown(Keys.Up) || _currentGamePadState.DPad.Up == ButtonState.Pressed)
+            {
+                _player.Position.Y -= PlayerMoveSpeed;
+            }
+            if (_currentKeyboardState.IsKeyDown(Keys.Down) || _currentGamePadState.DPad.Down == ButtonState.Pressed)
+            {
+                _player.Position.Y += PlayerMoveSpeed;
+            }
+
+            // Make sure that the player does not go out of bounds
+            _player.Position.X = MathHelper.Clamp(_player.Position.X, 0, GraphicsDevice.Viewport.Width - _player.Width);
+            _player.Position.Y = MathHelper.Clamp(_player.Position.Y, 0, GraphicsDevice.Viewport.Height - _player.Height);
+
+
         }
 
         /// <summary>

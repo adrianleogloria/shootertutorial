@@ -12,7 +12,7 @@ namespace ShooterTutorial
     {
         public Texture2D PlayerTexture;
 
-        public Vector2 PlayerPosition;
+        public Vector2 Position;
 
         // State of the player
         public bool Active;
@@ -29,7 +29,7 @@ namespace ShooterTutorial
         public void Initialize(Texture2D playerTexture, Vector2 playerPosition)
         {
             PlayerTexture = playerTexture;
-            PlayerPosition = playerPosition;
+            Position = playerPosition;
 
             Active = true;
             Health = 100;
@@ -42,7 +42,7 @@ namespace ShooterTutorial
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(PlayerTexture, PlayerPosition, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None,
+            spriteBatch.Draw(PlayerTexture, Position, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None,
                              0f);
         }
     }
