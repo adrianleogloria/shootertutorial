@@ -95,9 +95,11 @@ namespace ShooterTutorial
             // Save the previous state of the keyboard and game pad so we can determine single key/button presses
             _prevGamePadState = _currentGamePadState;
             _prevKeyboardState = _currentKeyboardState;
+            _prevMouseState = _currentMouseState;
             // Read the current state of the keyboard and gamepad and store it.
             _currentKeyboardState = Keyboard.GetState();
             _currentGamePadState = GamePad.GetState(PlayerIndex.One);
+            _currentMouseState = Mouse.GetState();
             
             UpdatePlayer(gameTime);
 
@@ -106,6 +108,26 @@ namespace ShooterTutorial
 
         void UpdatePlayer(GameTime gameTime)
         {
+            // Touch inputs
+            while (TouchPanel.IsGestureAvailable)
+            {
+                GestureSample gesture = TouchPanel.ReadGesture();
+                
+                if (gesture.GestureType == GestureType.FreeDrag)
+                    _player.Position += gesture.Delta;
+            }
+
+            // Get Mouse State
+            Vector2 mousePosition = new Vector2(_currentMouseState.X, _currentMouseState.Y);
+            if (_currentMouseState.LeftButton == ButtonState.Pressed)
+            {
+                Vector2 posDelta = mousePosition - _player.Position;
+                posDelta.Normalize();
+                posDelta = posDelta * PlayerMoveSpeed;
+                _player.Position = _player.Position + posDelta;
+            }
+
+
             // Thumbstick controls
             _player.Position.X += _currentGamePadState.ThumbSticks.Left.X * PlayerMoveSpeed;
             _player.Position.Y += _currentGamePadState.ThumbSticks.Left.Y * PlayerMoveSpeed;
