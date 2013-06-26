@@ -141,9 +141,6 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <Content Include="Content\Graphics\player.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Models\engine_diff_tex_0.xnb">
       <Link>Content\Models\engine_diff_tex_0.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -156,9 +153,81 @@
       <Link>Content\Models\turret_alt_diff_tex_0.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Graphics\bgLayer1.xnb">
+      <Link>Content\Graphics\bgLayer1.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Graphics\bgLayer2.xnb">
+      <Link>Content\Graphics\bgLayer2.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Graphics\endMenu.xnb">
+      <Link>Content\Graphics\endMenu.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Graphics\explosion.xnb">
+      <Link>Content\Graphics\explosion.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Graphics\gameFont.xnb">
+      <Link>Content\Graphics\gameFont.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Graphics\laser.xnb">
+      <Link>Content\Graphics\laser.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Graphics\mainbackground.xnb">
+      <Link>Content\Graphics\mainbackground.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Graphics\mainMenu.xnb">
+      <Link>Content\Graphics\mainMenu.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Graphics\mine.xnb">
+      <Link>Content\Graphics\mine.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Graphics\mineAnimation.xnb">
+      <Link>Content\Graphics\mineAnimation.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Graphics\player.xnb">
+      <Link>Content\Graphics\player.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Graphics\shipAnimation.xnb">
+      <Link>Content\Graphics\shipAnimation.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Sounds\explosion.xnb">
+      <Link>Content\Sounds\explosion.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Sounds\gameMusic.xnb">
+      <Link>Content\Sounds\gameMusic.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Sounds\laserFire.xnb">
+      <Link>Content\Sounds\laserFire.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Sounds\menuMusic.xnb">
+      <Link>Content\Sounds\menuMusic.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="ShooterTutorial_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Sounds\gameMusic.wma">
+      <Link>Content\Sounds\gameMusic.wma</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ShooterContent\ShooterContent\bin\Windows\Content\Sounds\menuMusic.wma">
+      <Link>Content\Sounds\menuMusic.wma</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Logo.png" />
     <Content Include="Assets\SmallLogo.png" />
     <Content Include="Assets\SplashScreen.png" />
@@ -184,6 +253,7 @@
       <Name>ShooterContentTypes</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
   </PropertyGroup>

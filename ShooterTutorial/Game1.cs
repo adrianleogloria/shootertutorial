@@ -8,7 +8,7 @@ namespace ShooterTutorial
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    /*public class Game1 : Game
+    public class Game1 : Game
     {
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
@@ -95,9 +95,9 @@ namespace ShooterTutorial
 
             base.Draw(gameTime);
         }
-    }*/
+    }
 
-    /// <summary>
+    /*/// <summary>
     /// This is the main type for your game
     /// </summary>
     public class Game1 : Game
@@ -217,6 +217,6 @@ namespace ShooterTutorial
         }
 
         #endregion
-    }
+    }*/
 
 }
