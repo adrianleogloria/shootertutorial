@@ -10,7 +10,7 @@ namespace ShooterTutorial
 {
     class Player
     {
-        public Texture2D PlayerTexture;
+        public Animation PlayerAnimation;
 
         public Vector2 Position;
 
@@ -21,29 +21,30 @@ namespace ShooterTutorial
         public int Health;
 
         public int Width
-        { get { return PlayerTexture.Width; } }
+        { get { return PlayerAnimation.FrameWidth; } }
         
         public int Height
-        { get { return PlayerTexture.Height; } }
+        { get { return PlayerAnimation.FrameHeight; } }
 
-        public void Initialize(Texture2D playerTexture, Vector2 playerPosition)
+        public void Initialize(Animation animation, Vector2 position)
         {
-            PlayerTexture = playerTexture;
-            Position = playerPosition;
+            PlayerAnimation = animation;
 
+
+            Position = position;
             Active = true;
             Health = 100;
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
-            
+            PlayerAnimation.Position = Position;
+            PlayerAnimation.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(PlayerTexture, Position, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None,
-                             0f);
+            PlayerAnimation.Draw(spriteBatch);
         }
     }
 }

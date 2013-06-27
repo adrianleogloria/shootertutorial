@@ -65,14 +65,15 @@ namespace ShooterTutorial
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
             // Load the player resources
-
             Rectangle titleSafeArea = GraphicsDevice.Viewport.TitleSafeArea;
             var playerPosition = new Vector2(titleSafeArea.X, titleSafeArea.Y + titleSafeArea.Height/2);
-            Texture2D playerTexture = Content.Load<Texture2D>("Graphics\\player");
-            _player.Initialize(playerTexture, playerPosition);
-
+            
+            Texture2D playerTexture = Content.Load<Texture2D>("Graphics\\shipAnimation");
+            Animation playerAnimation = new Animation();
+            playerAnimation.Initialize(playerTexture, playerPosition, 115, 69, 8, 30, Color.White, 1, true);
+            
+            _player.Initialize(playerAnimation, playerPosition);
         }
 
         /// <summary>
@@ -108,6 +109,8 @@ namespace ShooterTutorial
 
         void UpdatePlayer(GameTime gameTime)
         {
+            _player.Update(gameTime);
+
             // Touch inputs
             while (TouchPanel.IsGestureAvailable)
             {
@@ -154,8 +157,6 @@ namespace ShooterTutorial
             // Make sure that the player does not go out of bounds
             _player.Position.X = MathHelper.Clamp(_player.Position.X, 0, GraphicsDevice.Viewport.Width - _player.Width);
             _player.Position.Y = MathHelper.Clamp(_player.Position.Y, 0, GraphicsDevice.Viewport.Height - _player.Height);
-
-
         }
 
         /// <summary>
