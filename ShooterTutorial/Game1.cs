@@ -11,9 +11,19 @@ namespace ShooterTutorial
     /// </summary>
     public class Game1 : Game
     {
+        // A movement speed for the player.
+        private const float PlayerMoveSpeed = 8;
+
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
         Player _player;
+
+        Texture2D _mainBackground;
+        ParallaxingBackground _bgLayer1;
+        ParallaxingBackground _bgLayer2;
+        Rectangle _rectBackground;
+        const float Scale = 1f;
+
 
         // Keyboard states
         KeyboardState _currentKeyboardState;
@@ -26,10 +36,6 @@ namespace ShooterTutorial
         // Mouse states
         MouseState _currentMouseState;
         MouseState _prevMouseState;
-
-        // A movement speed for the player.
-        private const float PlayerMoveSpeed = 8;
-
 
         public Game1()
         {
@@ -47,9 +53,10 @@ namespace ShooterTutorial
         {
             // TODO: Add your initialization logic here
             _player = new Player();
-            
-            // Set a constant player move speed.
-            //_playerMoveSpeed = 8;
+
+            _bgLayer1 = new ParallaxingBackground();
+            _bgLayer2 = new ParallaxingBackground();
+            _rectBackground = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
 
             TouchPanel.EnabledGestures = GestureType.FreeDrag;
             
@@ -74,6 +81,11 @@ namespace ShooterTutorial
             playerAnimation.Initialize(playerTexture, playerPosition, 115, 69, 8, 30, Color.White, 1, true);
             
             _player.Initialize(playerAnimation, playerPosition);
+
+            // Load the background.
+            _bgLayer1.Initialize(Content, "Graphics/bgLayer1", GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, -1);
+            _bgLayer2.Initialize(Content, "Graphics/bgLayer2", GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, -2);
+            _mainBackground = Content.Load<Texture2D>("Graphics/mainbackground");
         }
 
         /// <summary>
@@ -103,6 +115,8 @@ namespace ShooterTutorial
             _currentMouseState = Mouse.GetState();
             
             UpdatePlayer(gameTime);
+            _bgLayer1.Update(gameTime);
+            _bgLayer2.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -170,6 +184,12 @@ namespace ShooterTutorial
             // TODO: Add your drawing code here
             // Start drawing
             _spriteBatch.Begin();
+
+            // Draw background.
+            _spriteBatch.Draw(_mainBackground, _rectBackground, Color.White);
+            _bgLayer1.Draw(_spriteBatch);
+            _bgLayer2.Draw(_spriteBatch);
+
 
             // Draw the Player
             _player.Draw(_spriteBatch);
