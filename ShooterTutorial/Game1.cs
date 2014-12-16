@@ -2,7 +2,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
+using MonoShooter;
 using ShooterTutorial.ShooterContentTypes;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace ShooterTutorial
 {
@@ -37,6 +41,14 @@ namespace ShooterTutorial
         MouseState _currentMouseState;
         MouseState _prevMouseState;
 
+        // texture to hold the laser.
+        Texture2D laserTexture;
+        List<Laser> laserBeams;
+
+        // govern how fast our laser can fire.
+        TimeSpan laserSpawnTime;
+        TimeSpan previousLaserSpawnTime;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -59,6 +71,13 @@ namespace ShooterTutorial
             _rectBackground = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
 
             TouchPanel.EnabledGestures = GestureType.FreeDrag;
+
+            // init our laser
+            laserBeams = new List<Laser>();
+            const float SECONDS_IN_MINUTE = 60f;
+            const float RATE_OF_FIRE = 200f;
+            laserSpawnTime = TimeSpan.FromSeconds(SECONDS_IN_MINUTE / RATE_OF_FIRE);
+            previousLaserSpawnTime = TimeSpan.Zero;
             
             base.Initialize();
         }
@@ -73,7 +92,7 @@ namespace ShooterTutorial
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Load the player resources
-            Rectangle titleSafeArea = GraphicsDevice.Viewport.TitleSafeArea;
+            Rectangle titleSafeArea = GraphicsDevice.Viewport.TitleSafeArea;    
             var playerPosition = new Vector2(titleSafeArea.X, titleSafeArea.Y + titleSafeArea.Height/2);
             
             Texture2D playerTexture = Content.Load<Texture2D>("Graphics\\shipAnimation");
@@ -86,6 +105,10 @@ namespace ShooterTutorial
             _bgLayer1.Initialize(Content, "Graphics/bgLayer1", GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, -1);
             _bgLayer2.Initialize(Content, "Graphics/bgLayer2", GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, -2);
             _mainBackground = Content.Load<Texture2D>("Graphics/mainbackground");
+
+            // load th texture to serve as the laser.
+            laserTexture = Content.Load<Texture2D>("Graphics\\laser");
+
         }
 
         /// <summary>
@@ -117,6 +140,9 @@ namespace ShooterTutorial
             UpdatePlayer(gameTime);
             _bgLayer1.Update(gameTime);
             _bgLayer2.Update(gameTime);
+
+            // update lasers
+            UpdateLasers(gameTime);
 
             base.Update(gameTime);
         }
@@ -168,6 +194,11 @@ namespace ShooterTutorial
                 _player.Position.Y += PlayerMoveSpeed;
             }
 
+            if (_currentKeyboardState.IsKeyDown(Keys.Space) || _currentGamePadState.Buttons.X == ButtonState.Pressed)
+            {
+                FireLaser(gameTime);
+            }
+
             // Make sure that the player does not go out of bounds
             _player.Position.X = MathHelper.Clamp(_player.Position.X, 0, GraphicsDevice.Viewport.Width - _player.Width);
             _player.Position.Y = MathHelper.Clamp(_player.Position.Y, 0, GraphicsDevice.Viewport.Height - _player.Height);
@@ -194,134 +225,83 @@ namespace ShooterTutorial
             // Draw the Player
             _player.Draw(_spriteBatch);
 
+            // Draw the lasers.
+            foreach (var l in laserBeams)
+            {
+                l.Draw(_spriteBatch);
+            }
+
             // Stop drawing
             _spriteBatch.End(); 
 
 
             base.Draw(gameTime);
         }
-    }
 
-    /*/// <summary>
-    /// This is the main type for your game
-    /// </summary>
-    public class Game1 : Game
-    {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
 
-        CustomModel model;
-
-        Matrix world;
-        Matrix view;
-        Matrix projection;
-
-        public Game1()
-            : base()
+        protected void UpdateLasers(GameTime gameTime)
         {
-            graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
+           
+            // update laserbeams
+            for (var i = 0; i < laserBeams.Count;i++ )
+                {
+
+                    laserBeams[i].Update(gameTime);
+
+                    // Remove the beam when its deactivated or is at the end of the screen.
+                    if (!laserBeams[i].Active || laserBeams[i].Position.X > GraphicsDevice.Viewport.Width)
+                    {
+                        laserBeams.Remove(laserBeams[i]);
+                    }
+                }
         }
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
-        protected override void Initialize()
+        protected void FireLaser(GameTime gameTime)
         {
-            // TODO: Add your initialization logic here
-
-            base.Initialize();
-        }
-
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
-        protected override void LoadContent()
-        {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
-            model = Content.Load<CustomModel>("Models\\tank");
-
-            // Calculate camera view and projection matrices.
-            view = Matrix.CreateLookAt(new Vector3(1000, 500, 0),
-                                       new Vector3(0, 150, 0), Vector3.Up);
-
-            projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4,
-                                                             GraphicsDevice.Viewport.AspectRatio, 10, 10000);
-
-        }
-
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// all content.
-        /// </summary>
-        protected override void UnloadContent()
-        {
-            // TODO: Unload any non ContentManager content here
-        }
-
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Update(GameTime gameTime)
-        {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
-            // TODO: Add your update logic here
-            HandleInput();
-
-            // Update the world transform to make the model rotate.
-            float time = (float)gameTime.TotalGameTime.TotalSeconds;
-
-            world = Matrix.CreateRotationY(time * 0.1f);
-
-            base.Update(gameTime);
-        }
-
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Draw(GameTime gameTime)
-        {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            // TODO: Add your drawing code here
-            graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            model.Draw(world, view, projection);
-
-            base.Draw(gameTime);
-        }
-
-        #region Handle Input
-
-        /// <summary>
-        /// Handles input for quitting the game.
-        /// </summary>
-        private void HandleInput()
-        {
-            KeyboardState currentKeyboardState = Keyboard.GetState();
-            GamePadState currentGamePadState = GamePad.GetState(PlayerIndex.One);
-
-            // Check for exit.
-            if (currentKeyboardState.IsKeyDown(Keys.Escape) ||
-                currentGamePadState.Buttons.Back == ButtonState.Pressed)
+            // govern the rate of fire for our lasers
+            if (gameTime.TotalGameTime - previousLaserSpawnTime > laserSpawnTime)
             {
-                Exit();
+                previousLaserSpawnTime = gameTime.TotalGameTime;
+
+                // Add the laer to our list.
+                AddLaser();
             }
+
         }
 
-        #endregion
-    }*/
+        protected void AddLaser()
+        {
+            Animation laserAnimation = new Animation();
+
+            // initlize the laser animation
+            laserAnimation.Initialize(laserTexture,
+                _player.Position,
+                46,
+                16,
+                1,
+                30,
+                Color.White,
+                1f,
+                true);
+
+            Laser laser = new Laser();
+
+            // Get the starting postion of the laser.
+            var laserPostion = _player.Position;
+            // Adjust the position slightly to match the muzzle of the cannon.
+            laserPostion.Y += 37;
+            laserPostion.X += 70;
+
+            // init the laser
+            laser.Initialize(laserAnimation, laserPostion);
+
+            laserBeams.Add(laser);
+
+            /* todo: add code to create a laser. */
+            //laserSoundInstance.Play();
+        }
+
+    }
+     
 
 }
