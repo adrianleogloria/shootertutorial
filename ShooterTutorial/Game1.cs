@@ -1,12 +1,12 @@
+using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
-using MonoShooter;
+using ShooterTutorial.GameObjects;
 using ShooterTutorial.ShooterContentTypes;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+
 
 namespace ShooterTutorial
 {
@@ -49,6 +49,17 @@ namespace ShooterTutorial
         TimeSpan laserSpawnTime;
         TimeSpan previousLaserSpawnTime;
 
+        // The rate at which enemies appear.
+        TimeSpan enemySpawnTime;
+        TimeSpan previousSpawnTime;
+
+        //Enemies
+        Texture2D enemyTexture;
+        List<Enemy> enemies;
+
+        // a random number gen
+        Random random;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -78,6 +89,15 @@ namespace ShooterTutorial
             const float RATE_OF_FIRE = 200f;
             laserSpawnTime = TimeSpan.FromSeconds(SECONDS_IN_MINUTE / RATE_OF_FIRE);
             previousLaserSpawnTime = TimeSpan.Zero;
+
+            // Initialize the enemies list
+            enemies = new List<Enemy>();
+
+            //used to determine how fast the enemies will respawn.
+            enemySpawnTime = TimeSpan.FromSeconds(1.0f);
+
+            // init our random number generator
+            random = new Random();
             
             base.Initialize();
         }
@@ -105,6 +125,9 @@ namespace ShooterTutorial
             _bgLayer1.Initialize(Content, "Graphics/bgLayer1", GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, -1);
             _bgLayer2.Initialize(Content, "Graphics/bgLayer2", GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, -2);
             _mainBackground = Content.Load<Texture2D>("Graphics/mainbackground");
+
+            // load the enemy texture.
+            enemyTexture = Content.Load<Texture2D>("Graphics\\mineAnimation");
 
             // load th texture to serve as the laser.
             laserTexture = Content.Load<Texture2D>("Graphics\\laser");
@@ -143,6 +166,12 @@ namespace ShooterTutorial
 
             // update lasers
             UpdateLasers(gameTime);
+
+            // update the enemies
+            UpdateEnemies(gameTime);
+
+            // update collisons
+            UpdateCollision();
 
             base.Update(gameTime);
         }
@@ -231,14 +260,20 @@ namespace ShooterTutorial
                 l.Draw(_spriteBatch);
             }
 
+
+            // draw the enemies
+            foreach(var e in enemies)
+            {
+                e.Draw(_spriteBatch);
+            };
+
             // Stop drawing
             _spriteBatch.End(); 
 
 
             base.Draw(gameTime);
         }
-
-
+        
         protected void UpdateLasers(GameTime gameTime)
         {
            
@@ -301,7 +336,128 @@ namespace ShooterTutorial
             //laserSoundInstance.Play();
         }
 
-    }
-     
+        protected void UpdateEnemies(GameTime gameTime)
+        {
+            // spawn a new enemy every 1.5 seconds.
+            if (gameTime.TotalGameTime - previousSpawnTime > enemySpawnTime)
+            {
+                previousSpawnTime = gameTime.TotalGameTime;
 
+                // add an enemy
+                AddEnemy();
+            }
+
+            // update the enemies
+            for (var i = 0; i < enemies.Count; i++)
+            {
+                enemies[i].Update(gameTime);
+                if (!enemies[i].Active)
+                {
+                    enemies.Remove(enemies[i]);
+                }
+            }
+        }
+
+        protected void AddEnemy()
+        {
+            // create the animation object
+            Animation enemyAnimation = new Animation();
+
+            // Init the animation with the correct 
+            // animation information
+            enemyAnimation.Initialize(enemyTexture,
+                Vector2.Zero,
+                47,
+                61,
+                8,
+                30,
+                Color.White,
+                1f,
+                true);
+
+            // randomly generate the postion of the enemy
+            Vector2 position = new Vector2(
+                GraphicsDevice.Viewport.Width + enemyTexture.Width / 2,
+                random.Next(100, GraphicsDevice.Viewport.Height - 100));
+
+            // create an enemy
+            Enemy enemy = new Enemy();
+
+            // init the enemy
+            enemy.Initialize(enemyAnimation, position);
+
+            // Add the enemy to the active enemies list
+            enemies.Add(enemy);
+
+        }
+
+        protected void UpdateCollions()
+        {
+
+        }
+
+        protected void UpdateCollision()
+        {
+
+            // we are going to use the rectangle's built in intersection
+            // methods.
+
+            Rectangle playerRectangle;
+            Rectangle enemyRectangle;
+            Rectangle laserRectangle;
+
+            // create the rectangle for the player
+            playerRectangle = new Rectangle(
+                (int)_player.Position.X,
+                (int)_player.Position.Y,
+                _player.Width,
+                _player.Height);
+
+            // detect collisions between the player and all enemies.
+            for(var i = 0; i < enemies.Count; i++)
+            {
+                enemyRectangle = new Rectangle(
+                   (int)enemies[i].Position.X,
+                   (int)enemies[i].Position.Y,
+                   enemies[i].Width,
+                   enemies[i].Height);
+
+                // determine if the player and the enemy intersect.
+                if (playerRectangle.Intersects(enemyRectangle))
+                {
+                   
+
+                    // deal damge to the player
+                    _player.Health -= enemies[i].Damage;
+
+                    // if the player has no health destroy it.
+                    if (_player.Health <= 0)
+                    {
+                        _player.Active = false;
+                    }
+                }
+
+                for (var l = 0; l < laserBeams.Count; l++)
+                {
+                    // create a rectangle for this laserbeam
+                    laserRectangle = new Rectangle(
+                        (int)laserBeams[l].Position.X,
+                        (int)laserBeams[l].Position.Y,
+                        laserBeams[l].Width,
+                        laserBeams[l].Height);
+
+                    // test the bounds of the laer and enemy
+                    if (laserRectangle.Intersects(enemyRectangle))
+                    {
+                        // kill off the enemy
+                        enemies[i].Health = 0;
+
+                        // kill off the laserbeam
+                        laserBeams[l].Active = false;
+                    }
+                }
+            }
+        }
+    }
 }
+    

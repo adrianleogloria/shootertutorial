@@ -131,13 +131,14 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GameObjects\Enemy.cs" />
     <Compile Include="GameObjects\Laser.cs" />
     <Compile Include="GamePage.xaml.cs">
       <DependentUpon>GamePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Game1.cs" />
     <Compile Include="ParallaxingBackground.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="GameObjects\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

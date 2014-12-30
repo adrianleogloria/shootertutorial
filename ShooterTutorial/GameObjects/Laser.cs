@@ -5,7 +5,7 @@ using ShooterTutorial;
 
 
 
-namespace MonoShooter
+namespace ShooterTutorial.GameObjects
 {
     public class Laser 
     {
